@@ -20,7 +20,7 @@ namespace PIWeapon
     {
         public const string GUID = "sp2t.etg.piweapon";
         public const string NAME = "PIWeapon";
-        public const string VERSION = "1.0.0";
+        public const string VERSION = "1.0.2";
         public const string TEXT_COLOR = "#00FFFF";
 
         public void Start()

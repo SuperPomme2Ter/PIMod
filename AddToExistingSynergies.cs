@@ -7,12 +7,12 @@ namespace PIWeapon
 {
     public static class AddToExistingSynergies
     {
-        public static void AddItemToSynergy(this PickupObject obj, CustomSynergyType type)
+        public static void AddItemToSynergy(this PickupObject obj, CustomSynergyType type,bool priority=false)
         {
-            AddItemToSynergy(type, obj.PickupObjectId);
+            AddItemToSynergy(type, obj.PickupObjectId,priority);
         }
 
-        public static void AddItemToSynergy(CustomSynergyType type, int id)
+        public static void AddItemToSynergy(CustomSynergyType type, int id, bool priority)
         {
             foreach (AdvancedSynergyEntry entry in GameManager.Instance.SynergyManager.synergies)
             {
@@ -23,13 +23,22 @@ namespace PIWeapon
                         PickupObject obj = PickupObjectDatabase.GetById(id);
                         if (obj is Gun)
                         {
-                            if (entry.OptionalGunIDs != null)
+                            List<int> priorityList;
+                            if (priority) 
                             {
-                                entry.OptionalGunIDs.Add(id);
+                                priorityList=entry.MandatoryGunIDs;
                             }
                             else
                             {
-                                entry.OptionalGunIDs = new List<int> { id };
+                                priorityList=entry.OptionalGunIDs;
+                            }
+                            if (priorityList != null)
+                            {
+                                priorityList.Add(id);
+                            }
+                            else
+                            {
+                                priorityList = new List<int> { id };
                             }
                         }
                         else

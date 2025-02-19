@@ -8,6 +8,8 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using HutongGames.PlayMaker.Actions;
 using MonoMod.RuntimeDetour;
+using System.Linq;
+
 
 namespace PIWeapon
 {
@@ -21,10 +23,25 @@ namespace PIWeapon
                 Plugin.Log($"Shooting animation found. path : {gun.shootAnimation}", "#FFFFFF");
                 Plugin.Log($"Reload animation found. path : {gun.reloadAnimation}", "#FFFFFF");
                 Plugin.Log($"damage {gun.DefaultModule.projectiles[0].baseData.damage}", "#FFFFFF");
+                foreach (AdvancedSynergyEntry entry in GameManager.Instance.SynergyManager.synergies.Where(x => x.MandatoryGunIDs.Contains(175) || x.OptionalGunIDs.Contains(175)))
+                {
+                    foreach(CustomSynergyType synergy in entry.bonusSynergies)
+                    {
+                        Plugin.Log(synergy.ToString());
+                    }
+                }
             }
             else
             {
                 Plugin.Log("shooting animation not found");
+            }
+            if (gun.sprite == null)
+            {
+                Plugin.Log("IDLE not found");
+            }
+            if (gun.shellCasing == null)
+            {
+                Plugin.Log("Casing not found");
             }
             projectilePath.Add("pi_projectile_001");
             projectilePath.Add("pi_projectile_002");
@@ -35,7 +52,7 @@ namespace PIWeapon
         {
 
             Gun gun = ETGMod.Databases.Items.NewGun("PIstol", "pi");
-            Game.Items.Rename("outdated_gun_mods:pistol", "pi_mod:PIstol");
+            Game.Items.Rename("outdated_gun_mods:pistol", "pimod:PIstol");
             gun.gameObject.AddComponent<PI>();
             string SpriteDirectory = "PIWeapon/Resources/CustomGunAmmoTypes/pi_ammo";
             string SpriteDirectoryDepleted= "PIWeapon/Resources/CustomGunAmmoTypes/pi_ammo_depleted";
@@ -65,7 +82,6 @@ namespace PIWeapon
                                 "Play_WPN_zorgun_shot_01");
             SoundManager.AddCustomSwitchData("WPN_Guns", gun.gunSwitchGroup, "Play_WPN_Gun_Reload_01",
                                             "Play_WPN_makarov_reload_01");
-            
             
             
             gun.muzzleFlashEffects = VFXBuilder.CreateVFXPool("PI Muzzleflash", new List<string>
@@ -112,8 +128,11 @@ namespace PIWeapon
             gun.DefaultModule.customAmmoType = CustomClipAmmoTypeToolbox.AddCustomAmmoType("PI",
                 SpriteDirectory,
                 SpriteDirectoryDepleted);
-            gun.AddItemToSynergy(CustomSynergyType.THREE_SIXTY_SCOPE);
-            gun.AddItemToSynergy(CustomSynergyType.COOLER);
+            //gun.AddItemToSynergy(,5);
+            //gun.AddItemToSynergy(CustomSynergyType.THREE_SIXTY_SCOPE,true);
+            //gun.AddItemToSynergy(CustomSynergyType.FULLCIRCLE,true);
+            //GameManager.Instance.SynergyManager.synergies;
+            
             return gun;
         }
         protected override void Update()
